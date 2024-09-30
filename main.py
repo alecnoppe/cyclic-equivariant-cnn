@@ -1,12 +1,20 @@
-import argparse
-import torch
-from torch.utils.data import DataLoader
+#!/usr/bin/env python
+
+"""
+Main access point of the codebase; used to train models.
+"""
+
 from src.utils.Accuracy import Accuracy
 from src.utils.MNIST_Dataset import MNIST_Dataset
 from src.utils.Trainer import Trainer
 from src.models.C4_CNN import C4_CNN
 from src.models.D4_CNN import D4_CNN
 from src.models.CNN import CNN
+
+import argparse
+import torch
+from torch.utils.data import DataLoader
+
 
 def main():
     parser = argparse.ArgumentParser()
@@ -21,7 +29,7 @@ def main():
     parser.add_argument('--loss', type=str, default='cross', help='loss function to use')
     parser.add_argument('--loss-path', type=str, default='results/c4_cnn_loss.csv', help='path to save loss')
     args = parser.parse_args()
-
+    # QoL dictionaries, used in combination with the parser. Select arguments from these dictionaries.
     DATA_DICT = {
         "c4": "data/MNIST/C4/",
         "d4": "data/MNIST/C4/",
@@ -41,17 +49,16 @@ def main():
         'd4': D4_CNN(1, (32, ), torch.nn.SiLU(), torch.nn.MaxPool2d(2)),
         'cnn': CNN(1, (32, ), torch.nn.SiLU(), torch.nn.MaxPool2d(2))
     }
-
+    # Create train/val/test dataloaders.
     training_dataloader = DataLoader(MNIST_Dataset(DATA_DICT[args.data]+"training.pt"), batch_size=args.batch_size, shuffle=True)
     validation_dataloader = DataLoader(MNIST_Dataset(DATA_DICT[args.data]+"validation.pt"), batch_size=args.batch_size)
     test_dataloader = DataLoader(MNIST_Dataset(DATA_DICT[args.data]+"test.pt"), batch_size=args.batch_size)
-
+    # Initialize model, optimizeer and loss functions.
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model = MODEL_DICT[args.model].to(device)
     optimizer = OPT_DICT[args.optimizer](params=model.parameters(), lr=0.001, weight_decay=0.0001)
     loss = LOSS_DICT[args.loss]
-
-
+    # Train the model
     trainer = Trainer(model, optimizer, loss, training_dataloader, validation_dataloader, test_dataloader, device)
     trainer.train(args.model_path, args.loss_path, args.epochs)
     best_model = torch.load(args.model_path)

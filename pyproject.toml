@@ -1,0 +1,17 @@
+[project]
+name = "cyclic_operations"
+version = "0.0.1"
+authors = [
+  { name="Alec Noppe", email="a.noppe@student.tue.nl" },
+]
+description = "C4 and D4 Equivariant CNN implementations"
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/alecnoppe/cyclic-equivariant-cnn"

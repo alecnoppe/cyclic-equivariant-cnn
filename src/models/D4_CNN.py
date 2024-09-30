@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 from src.models.ConvBlock import ConvBlock
-from src.D4 import D4_Slice, D4_Pool, D4_Roll
+from src import D4_Slice, D4_Pool, D4_Roll
 
 class D4_CNN(nn.Module):
     def __init__(self, in_channels, block_sizes, activation, pooling_fn, input_dim=(28,28)):

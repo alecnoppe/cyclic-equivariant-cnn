@@ -1,5 +1,8 @@
-# Make MNIST dataset with 90 degree rotations
-# and reflections
+#!/usr/bin/env python
+
+"""
+Script to create the MNIST dataset variants (C4/D4) used in the demo.
+"""
 
 import torch
 import torchvision

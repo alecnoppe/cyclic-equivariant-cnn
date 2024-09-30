@@ -1,12 +1,22 @@
-import argparse
-import torch
-from torch.utils.data import DataLoader
+#!/usr/bin/env python
+
+"""
+test.py loads a pre-trained model and runs the Trainer.test() method, with a chosen loss function.
+
+NOTE: Trainer.test() is averaged per batch, not per sample.
+"""
+
 from src.utils.MNIST_Dataset import MNIST_Dataset
 from src.utils.Trainer import Trainer
 from src.utils.Accuracy import Accuracy
 from src.models.C4_CNN import C4_CNN
 from src.models.D4_CNN import D4_CNN
 from src.models.CNN import CNN
+
+import argparse
+import torch
+from torch.utils.data import DataLoader
+
 
 def main():
     parser = argparse.ArgumentParser()
