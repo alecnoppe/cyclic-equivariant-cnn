@@ -211,7 +211,7 @@ class D4_Stack(nn.Module):
         We use Version1, to create the stacks for the C4 group orientations (so 
         rotations without reflections) as follows:
 
-        T(x) = [x, r'x, r'r'x, r'r'r'x, Rx, Rr'x, Rr'r'x, Rr'r'r'x]
+        T(x) = [x, r'x, r'r'x, r'r'r'x, Rx, r'Rx, r'r'Rx, r'r'r'Rx]
         where T(x) is the D4-Stack function,
         r' indicates a 90 degree rotation in the inverse direction,
         R is a reflection.
@@ -219,7 +219,7 @@ class D4_Stack(nn.Module):
         We use Version2 to create the stacks for the reflected C4 group orientations
         (so all orientations WITH reflections) as follows:
 
-        T(x) = [Rx, Rr'x, Rr'r'x, Rrrrx, x, rx, rrx, rrrx]
+        T(x) = [Rx, Rr'x, Rr'r'x, Rr'r'r'x, x, rx, rrx, rrrx]
         where T(x) is the D4-Stack function,
         r indicates a 90 degree rotation,
         r' indicates a 90 degree rotation in the inverse direction
