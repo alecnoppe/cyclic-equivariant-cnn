@@ -18,7 +18,7 @@ class C4_CNN(nn.Module):
         super().__init__()
         self.c4_slice = C4_Slice()
         self.c4_pool = C4_Pool()
-        self.c4_roll = C4_Roll()
+        self.c4_roll = C4_Roll(use_version2=True)
 
         self.blocks = nn.ModuleList()
         for i, block_size in enumerate(block_sizes):
@@ -43,7 +43,6 @@ class C4_CNN(nn.Module):
         """
         x = self.c4_slice(x)
         
-
         for block in self.blocks:
             x = block(x)
 

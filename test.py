@@ -5,6 +5,7 @@ from src.utils.MNIST_Dataset import MNIST_Dataset
 from src.utils.Trainer import Trainer
 from src.utils.Accuracy import Accuracy
 from src.models.C4_CNN import C4_CNN
+from src.models.D4_CNN import D4_CNN
 from src.models.CNN import CNN
 
 def main():
@@ -22,7 +23,8 @@ def main():
     args = parser.parse_args()
 
     DATA_DICT = {
-        "c4": "data/MNIST/processed/"
+        "c4": "data/MNIST/C4/",
+        "d4": "data/MNIST/D4/"
     }
 
     OPT_DICT = {
@@ -37,6 +39,7 @@ def main():
 
     MODEL_DICT = {
         'c4': C4_CNN(1, (32, ), torch.nn.SiLU(), torch.nn.MaxPool2d(2)),
+        'd4': D4_CNN(1, (32, ), torch.nn.SiLU(), torch.nn.MaxPool2d(2)),
         'cnn': CNN(1, (32, ), torch.nn.SiLU(), torch.nn.MaxPool2d(2))
     }
 

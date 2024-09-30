@@ -266,14 +266,20 @@ class D4_Stack(nn.Module):
 
 
 class D4_Roll(nn.Module):
-    def __init__(self):
+    def __init__(self, use_version2 = False):
         """
         D4-Roll operation from the paper.
+
+        Args:
+            use_version2: bool; whether to re-align the feature maps after original
+                roll operation.
+                NOTE: Does not show any advantage
         """
         super().__init__()
         # Use the cyclic permutation and D4-Stack operations
         self.permute = D4_Cyclic_Permutation()
         self.stack = D4_Stack()
+        self.use_version2 = use_version2
 
     def forward(self, x):
         """
@@ -308,6 +314,13 @@ class D4_Roll(nn.Module):
                         self.stack(self.permute(torch.clone(x), 2), version1=False), 
                         self.stack(self.permute(torch.clone(x), 3), version1=False),
                         )
+        
+        # Version2 of the Roll operation re-aligns the channels to have the same
+        # Activations on each dimension
+        if self.use_version2:
+            X_roll_tuple = X_roll_tuple[0], self.permute(X_roll_tuple[1], -1), self.permute(X_roll_tuple[2], -2), self.permute(X_roll_tuple[3], -3), \
+                X_roll_tuple[4], self.permute(X_roll_tuple[5], -1), self.permute(X_roll_tuple[6], -2), self.permute(X_roll_tuple[7], -3)
+
         # Re-structure the tensor to the sliced batch dimensions
         X_roll = torch.stack(X_roll_tuple, dim=1).view(B,C*8,H,W)
 

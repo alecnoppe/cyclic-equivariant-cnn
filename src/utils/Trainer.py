@@ -37,12 +37,12 @@ class Trainer:
         # Train for n_epochs, store best validation loss and save model if save_model is True
         best_vloss = 1_000_000
         out = {"loss":[], "vloss":[]}
-        for epoch in range(n_epochs):
+        for epoch in range(1, n_epochs+1):
             # Train the model and record (validation loss)
             loss, vloss = self.train_step()
             out["loss"].append(loss)
             out["vloss"].append(vloss)
-            print(f"Training loss: {loss}\t\t Validation loss: {vloss}")
+            print(f"EPOCH-{epoch:04d} Training loss: {loss:.4f}\t\t Validation loss: {vloss:.4f}")
             # If validation loss is the lowest it has been
             # save the model
             if vloss < best_vloss:

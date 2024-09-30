@@ -1,9 +1,11 @@
 import argparse
 import torch
 from torch.utils.data import DataLoader
+from src.utils.Accuracy import Accuracy
 from src.utils.MNIST_Dataset import MNIST_Dataset
 from src.utils.Trainer import Trainer
 from src.models.C4_CNN import C4_CNN
+from src.models.D4_CNN import D4_CNN
 from src.models.CNN import CNN
 
 def main():
@@ -21,7 +23,8 @@ def main():
     args = parser.parse_args()
 
     DATA_DICT = {
-        "c4": "data/MNIST/processed/"
+        "c4": "data/MNIST/C4/",
+        "d4": "data/MNIST/C4/",
     }
 
     OPT_DICT = {
@@ -35,6 +38,7 @@ def main():
 
     MODEL_DICT = {
         'c4': C4_CNN(1, (32, ), torch.nn.SiLU(), torch.nn.MaxPool2d(2)),
+        'd4': D4_CNN(1, (32, ), torch.nn.SiLU(), torch.nn.MaxPool2d(2)),
         'cnn': CNN(1, (32, ), torch.nn.SiLU(), torch.nn.MaxPool2d(2))
     }
 
@@ -42,18 +46,19 @@ def main():
     validation_dataloader = DataLoader(MNIST_Dataset(DATA_DICT[args.data]+"validation.pt"), batch_size=args.batch_size)
     test_dataloader = DataLoader(MNIST_Dataset(DATA_DICT[args.data]+"test.pt"), batch_size=args.batch_size)
 
-    model = MODEL_DICT[args.model]
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    model = MODEL_DICT[args.model].to(device)
     optimizer = OPT_DICT[args.optimizer](params=model.parameters(), lr=0.001, weight_decay=0.0001)
     loss = LOSS_DICT[args.loss]
 
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
     trainer = Trainer(model, optimizer, loss, training_dataloader, validation_dataloader, test_dataloader, device)
     trainer.train(args.model_path, args.loss_path, args.epochs)
     best_model = torch.load(args.model_path)
     best_model.eval()
+    trainer.loss_fn = Accuracy(10)
     print("-"*20)
-    print("TEST LOSS:\t", trainer.test(best_model))
+    print("TEST Accuracy:\t", trainer.test(best_model))
 
 if __name__ == '__main__':
     main()
